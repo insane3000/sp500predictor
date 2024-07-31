@@ -11,7 +11,7 @@ export const prompt = (values: any) => {
     {
         "timestamp": "12:55:00",
         "close": 0
-    }
+    },
     // ... agrega los 6 objetos resultantes
 ]
 Asegúrate de que el JSON resultante esté bien formateado y que los timestamps sean consistentes en intervalos de 5 minutos. Si no se puede predecir un valor, usa null para el campo "close". 

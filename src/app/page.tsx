@@ -78,7 +78,7 @@ export default function Home() {
   //   }
   //   [];
 
-  const [indexDate, setIndexDate] = useState("2024-07-15");
+  const [indexDate, setIndexDate] = useState("2024-07-17");
   const [currentData, setCurrentData] = useState<any>([]);
   const [indexSlice, setIndexSlice] = useState(40);
   useEffect(() => {
