@@ -31,8 +31,6 @@ const ChartSt = styled.div`
 
 interface props {
   currentData: [];
-  indexDate: string;
-  response: any;
   isStreaming: boolean;
 }
 export default function Chart(props: props) {

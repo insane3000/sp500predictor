@@ -44,6 +44,7 @@ const APIKeySt = styled.div`
         background: none;
         border-style: none;
         outline: none;
+        padding: 0 1rem 0 0;
       }
       ::placeholder {
         color: #9e9e9e;

@@ -116,13 +116,16 @@ const SearchSt = styled.form`
 `;
 interface props {
   data: DataIT;
-  indexDate: string;
-  setIndexDate: (value: string) => void;
+  date: string;
+  setDate: (value: string) => void;
   setIndexSlice: (value: number) => void;
   search: string;
   setSearch: (key: string) => void;
   fetchStreamingText: (e: React.FormEvent<HTMLFormElement>) => void;
   setIsStreaming: (value: boolean) => void;
+  quantity: number;
+  setQuantity: (value: number) => void;
+  handleCurrentDate: () => void;
 }
 export default function Search(props: props) {
   return (
@@ -132,9 +135,9 @@ export default function Search(props: props) {
         <select
           className="box_select"
           name="indexDate"
-          value={props.indexDate}
+          value={props.date}
           onChange={(e) => {
-            props.setIndexDate(e.currentTarget.value);
+            props.setDate(e.currentTarget.value);
             props.setIndexSlice(40);
           }}
           required
@@ -145,12 +148,26 @@ export default function Search(props: props) {
             </option>
           ))}
         </select>
-        {/* <button className="button_search" type="submit">
-          Mostrar valor real
-        </button> */}
-        <div></div>
+        <select
+          className="box_select"
+          name="indexDate"
+          value={props.quantity}
+          onChange={(e) => {
+            props.setQuantity(+e.currentTarget.value);
+            props.handleCurrentDate();
+            props.setIndexSlice(40);
+          }}
+          required
+        >
+          {[6, 8, 10, 20, 30].map((i) => (
+            <option key={i} className="box_option" value={i}>
+              {i} Futuros valores
+            </option>
+          ))}
+        </select>
+
         <button className="button_prediction" type="submit">
-          Mostrar predicción
+          Relizar predicción
         </button>
       </div>
     </SearchSt>

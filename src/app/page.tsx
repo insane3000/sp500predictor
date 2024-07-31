@@ -3,7 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import styles from "./page.module.scss";
 import React, { useState, useRef, useEffect } from "react";
-import Chart from "@/components/molecules/Chart";
+import Chart from "@/components/organisms/Chart";
 import Search from "@/components/organisms/Search";
 import APIKey from "@/components/organisms/APIKey";
 import Ad from "@/components/atoms/Ad";
@@ -17,7 +17,7 @@ import { extractJSON } from "@/libs/extractJSON";
 export default function Home() {
   const textAreaRef = useRef<any>(null);
   const [spinner, setSpinner] = useState(true);
-  const [apiKey, setApiKey] = useState("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");
+  const [apiKey, setApiKey] = useState("");
   const [modelInput, setModelInput] = useState("llama-3-sonar-small-32k-chat");
   const [search, setSearch] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -32,7 +32,7 @@ export default function Home() {
 
   const fetchStreamingText = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = data[indexDate].slice(0, 40);
+    const historicalData = data[date].slice(0, 40);
 
     if (apiKey.length === 0) {
       toast("Debes introducir tu Perplexity API Key");
@@ -44,7 +44,7 @@ export default function Home() {
       const model = openaiProvider.chat(modelInput);
       const { textStream } = await streamText({
         model: model,
-        prompt: prompt(values),
+        prompt: prompt(historicalData, quantity),
       });
       let accumulatedText = "";
       for await (const textPart of textStream) {
@@ -59,7 +59,7 @@ export default function Home() {
       toast("Error solicitando los datos.");
     } finally {
       setIsStreaming(false);
-      setIndexSlice(80);
+      setIndexSlice(40 + quantity);
     }
   };
 
@@ -70,71 +70,54 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  // !TEST
-  //   interface currentDataIT {
-  //     timestamp: string;
-  //     close: number;
-  //     prediction: number;
-  //   }
-  //   [];
-
-  const [indexDate, setIndexDate] = useState("2024-07-17");
+  // !PROCESSING
+  const [date, setDate] = useState("2024-07-17");
   const [currentData, setCurrentData] = useState<any>([]);
   const [indexSlice, setIndexSlice] = useState(40);
-  useEffect(() => {
+  const [quantity, setQuantity] = useState(6);
+
+  const handleCurrentDate = () => {
     setCurrentData(
-      data[indexDate].map((i) => {
+      data[date].map((i) => {
         i.prediction = i.close;
         return i;
       })
     );
-  }, [indexDate]);
+  };
+  useEffect(() => {
+    handleCurrentDate();
+  }, [date]);
 
   useEffect(() => {
     if (!isStreaming) {
       const parsedData = extractJSON(response);
       setCurrentData(
-        data[indexDate].map((i: any) => {
+        data[date].map((i: any) => {
           const item = parsedData.find((f: any) => f.timestamp === i.timestamp);
-          console.log(item);
-
-          if (i.timestamp === item?.timestamp) {
-            i.prediction = item.close;
-          }
+          if (i.timestamp === item?.timestamp) i.prediction = item.close;
           return i;
         })
       );
-      //       console.log(
-      //         data[indexDate].map((i: any) => {
-      //           const item = parsedData.find((f: any) => f.timestamp === i.timestamp);
-      //           if (i.timestamp === item?.timestamp) {
-      //             i.prediction = item.closed;
-      //           }
-      //           return i;
-      //         })
-      //       );
     }
-  }, [isStreaming, response, indexDate]);
+  }, [isStreaming, response, date]);
 
   return (
     <div className={styles.main}>
       <APIKey apiKey={apiKey} setApiKey={setApiKey} modelInput={modelInput} setModelInput={setModelInput} />
       <Search
         data={data}
-        indexDate={indexDate}
-        setIndexDate={setIndexDate}
+        date={date}
+        setDate={setDate}
         setIndexSlice={setIndexSlice}
         search={search}
         setSearch={setSearch}
         fetchStreamingText={fetchStreamingText}
         setIsStreaming={setIsStreaming}
+        quantity={quantity}
+        setQuantity={setQuantity}
+        handleCurrentDate={handleCurrentDate}
       />
-      <Chart
-        currentData={currentData.slice(0, indexSlice)}
-        indexDate={indexDate}
-        response={response}
-        isStreaming={isStreaming}
-      />
+      <Chart currentData={currentData.slice(0, indexSlice)} isStreaming={isStreaming} />
       <Logs response={response} textAreaRef={textAreaRef} />
       <Ad />
       <Toaster style={{ fontFamily: "var(--motiva400)" }} />
