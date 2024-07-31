@@ -140,7 +140,7 @@ export default function Search(props: props) {
           required
         >
           {Object.keys(props.data).map((i) => (
-            <option className="box_option" value={i}>
+            <option key={i} className="box_option" value={i}>
               {i}
             </option>
           ))}

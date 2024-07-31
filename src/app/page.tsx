@@ -114,7 +114,7 @@ export default function Home() {
       //         })
       //       );
     }
-  }, [isStreaming, response]);
+  }, [isStreaming, response, indexDate]);
 
   return (
     <div className={styles.main}>
