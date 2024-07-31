@@ -24,8 +24,8 @@ const APIKeySt = styled.div`
     gap: 0.5rem;
     margin-bottom: 1rem;
     .container_icon_input {
-      background: #0a0a0a;
-      border: 1px solid #2c2c2c;
+      background: #27272a;
+      border: 1px solid hsla(240 3.7% 15.9%);
       border-radius: 0.25rem;
       display: grid;
       grid-template-columns: 2.5rem calc(100% - 2.5rem);
@@ -58,13 +58,14 @@ const APIKeySt = styled.div`
     .box_select {
       width: 100%;
       height: 100%;
-      background: #0a0a0a;
-      border: 1px solid #2c2c2c;
+      background: #27272a;
+      border: 1px solid hsla(240 3.7% 15.9%);
       border-radius: 0.25rem;
-      color: #ececec;
+      color: #bdbdbd;
       font-family: var(--motiva400);
       font-size: 0.75rem;
       padding: 0 1rem;
+      padding: 0 2.5rem 0 1rem;
       outline: none;
 
       // !HIDE UGLY ARROW
@@ -76,7 +77,7 @@ const APIKeySt = styled.div`
       background-position: calc(100% - 0.8rem) center;
       background-size: 0.8rem;
       .box_option {
-        color: #ececec;
+        color: #bdbdbd;
         font-family: var(--motiva400);
         font-size: 0.75rem;
       }

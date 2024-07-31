@@ -1,20 +1,19 @@
-export const prompt = (search: string) => {
+export const prompt = (values: any) => {
   return `
-        Dame los pros y contras de ${search} y en cada pro o contra agrega un campo de importance que vaya desde el 0 a 100. 
-        Devuélveme los resultados en el siguiente formato JSON y ordena primero los pros:
-        [
-            {
-                "type": "pro",
-                "description": "Mayor longevidad",
-                "importance": 85
-            },
-            {
-                "type": "contra",
-                "description": "Menor representación en la toma de decisiones",
-                "importance": 10
-            },
-            ...
-        ]
-        Asegúrate de incluir "type" en lugar de "pro" o "contra" y "description" para la descripción de cada pro o contra, seguido de "importancia_racional" ademas revisa que el JSON resultante este bien formateado.
-        `;
+  Basado en los datos históricos del siguiente JSON ${JSON.stringify(
+    values
+  )}, realiza un análisis técnico para predecir los próximos 8 valores de cierre. El análisis debe considerar tendencias, patrones y cualquier indicador relevante que puedas identificar. Devuélveme los resultados en objetos dentro de un array en el siguiente formato JSON:
+[
+    {
+        "timestamp": "12:50:00",
+        "close": 0
+    },
+    {
+        "timestamp": "12:55:00",
+        "close": 0
+    }
+    // ... agrega los 6 objetos resultantes
+]
+Asegúrate de que el JSON resultante esté bien formateado y que los timestamps sean consistentes en intervalos de 5 minutos. Si no se puede predecir un valor, usa null para el campo "close". 
+`;
 };

@@ -11,17 +11,17 @@ import Logs from "@/components/organisms/Logs";
 import { prompt } from "@/libs/prompt";
 import { Toaster, toast } from "sonner";
 import Spinner from "@/components/atoms/Spinner";
-import data from "../json/data.json";
+import { data, DataIT } from "@/json/data";
+import { extractJSON } from "@/libs/extractJSON";
+
 export default function Home() {
   const textAreaRef = useRef<any>(null);
   const [spinner, setSpinner] = useState(true);
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState("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");
   const [modelInput, setModelInput] = useState("llama-3-sonar-small-32k-chat");
   const [search, setSearch] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [response, setResponse] = useState("");
-
-  console.log(data);
 
   // Configuración del proveedor de OpenAI con la clave de API
   const openaiProvider = createOpenAI({
@@ -32,8 +32,11 @@ export default function Home() {
 
   const fetchStreamingText = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const values = data[indexDate].slice(0, 40);
+
     if (apiKey.length === 0) {
       toast("Debes introducir tu Perplexity API Key");
+      window.scrollTo(0, 0);
       return;
     }
     setIsStreaming(true);
@@ -41,7 +44,7 @@ export default function Home() {
       const model = openaiProvider.chat(modelInput);
       const { textStream } = await streamText({
         model: model,
-        prompt: prompt(search === "" ? "ser un hombre" : search),
+        prompt: prompt(values),
       });
       let accumulatedText = "";
       for await (const textPart of textStream) {
@@ -56,6 +59,7 @@ export default function Home() {
       toast("Error solicitando los datos.");
     } finally {
       setIsStreaming(false);
+      setIndexSlice(80);
     }
   };
 
@@ -66,16 +70,71 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, []);
 
+  // !TEST
+  //   interface currentDataIT {
+  //     timestamp: string;
+  //     close: number;
+  //     prediction: number;
+  //   }
+  //   [];
+
+  const [indexDate, setIndexDate] = useState("2024-07-15");
+  const [currentData, setCurrentData] = useState<any>([]);
+  const [indexSlice, setIndexSlice] = useState(40);
+  useEffect(() => {
+    setCurrentData(
+      data[indexDate].map((i) => {
+        i.prediction = i.close;
+        return i;
+      })
+    );
+  }, [indexDate]);
+
+  useEffect(() => {
+    if (!isStreaming) {
+      const parsedData = extractJSON(response);
+      setCurrentData(
+        data[indexDate].map((i: any) => {
+          const item = parsedData.find((f: any) => f.timestamp === i.timestamp);
+          console.log(item);
+
+          if (i.timestamp === item?.timestamp) {
+            i.prediction = item.close;
+          }
+          return i;
+        })
+      );
+      //       console.log(
+      //         data[indexDate].map((i: any) => {
+      //           const item = parsedData.find((f: any) => f.timestamp === i.timestamp);
+      //           if (i.timestamp === item?.timestamp) {
+      //             i.prediction = item.closed;
+      //           }
+      //           return i;
+      //         })
+      //       );
+    }
+  }, [isStreaming, response]);
+
   return (
     <div className={styles.main}>
       <APIKey apiKey={apiKey} setApiKey={setApiKey} modelInput={modelInput} setModelInput={setModelInput} />
-      {/* <Search
+      <Search
+        data={data}
+        indexDate={indexDate}
+        setIndexDate={setIndexDate}
+        setIndexSlice={setIndexSlice}
         search={search}
         setSearch={setSearch}
         fetchStreamingText={fetchStreamingText}
         setIsStreaming={setIsStreaming}
-      /> */}
-      <Chart data={data} response={response} isStreaming={isStreaming} />
+      />
+      <Chart
+        currentData={currentData.slice(0, indexSlice)}
+        indexDate={indexDate}
+        response={response}
+        isStreaming={isStreaming}
+      />
       <Logs response={response} textAreaRef={textAreaRef} />
       <Ad />
       <Toaster style={{ fontFamily: "var(--motiva400)" }} />

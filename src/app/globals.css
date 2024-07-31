@@ -6,13 +6,13 @@
 body {
   width: 100%;
   height: auto;
-  background: #000000;
+  background: #09090B;
   overflow-y: scroll;
 }
 .main {
   margin: auto;
   width: 100%;
-  max-width: 1500px;
+  max-width: 1000px;
   height: auto;
 }
 @media only screen and (max-width: 1400px) {

@@ -17,11 +17,12 @@ const LogsSt = styled.div`
 
     padding: 0.5rem 1rem;
     box-sizing: border-box;
-    border: 1px solid #2c2c2c;
+    border: 1px solid hsla(240 3.7% 15.9%);
+    background: #09090b;
     border-radius: 0.5rem;
-    background: rgb(10, 10, 10);
+
     font-size: 16px;
-   resize: vertical;
+    resize: vertical;
     outline: none;
     color: rgb(190, 190, 190);
 

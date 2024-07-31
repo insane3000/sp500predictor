@@ -11,8 +11,10 @@
   "dependencies": {
     "@ai-sdk/openai": "^0.0.40",
     "ai": "^3.2.38",
+    "chart.js": "^4.4.3",
     "next": "14.2.5",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "sass": "^1.77.8",
